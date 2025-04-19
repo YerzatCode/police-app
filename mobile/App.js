@@ -1,16 +1,22 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "./src/Screens/Home";
-import Chat from "./src/Screens/Chat";
+
 import React, { useEffect } from "react";
 import Login from "./src/Screens/Login";
 import Register from "./src/Screens/Register";
 import useUser from "./src/Store/user";
-import { ActivityIndicator, View } from "react-native";
-import IncidentScreen from "./src/Screens/Incident";
-import EmergencyAlerts from "./src/Screens/EmergencyAlerts";
-import ProfileScreen from "./src/Screens/ProfileScreen";
+import {
+  ActivityIndicator,
+  SafeAreaViewBase,
+  StatusBar,
+  View,
+} from "react-native";
+
 import { Ionicons } from "@expo/vector-icons"; // 🔹 Добавил импорт
+import TabNavigate from "./src/TabNavigate";
+import Chat from "./src/Screens/Chat";
+import NewsScreen from "./src/Screens/News";
+import NewsDetail from "./src/Screens/NewsDetail";
 
 const Stack = createStackNavigator();
 
@@ -31,12 +37,10 @@ export default function App() {
 
   return (
     <NavigationContainer>
+      <StatusBar barStyle="light-content" />
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: "#1c1f2a" },
-          headerTintColor: "white",
-          headerTitleStyle: { fontSize: 20, fontWeight: "bold" },
-          headerBackTitleVisible: false,
+          headerShown: false,
           headerBackImage: () => (
             <View style={{ paddingLeft: 10 }}>
               <Ionicons name="chevron-back" size={28} color="white" />
@@ -45,33 +49,27 @@ export default function App() {
         }}
       >
         {isAuth ? (
-          <>
+          <Stack.Group>
+            <Stack.Screen name="Tab" component={TabNavigate} />
+            <Stack.Screen name="Chat" component={Chat} />
+            <Stack.Screen name="News" component={NewsScreen} />
             <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{ title: "Панель управления" }}
+              name="NewsDetail"
+              component={NewsDetail}
+              options={({ navigation }) => ({
+                headerTitle: "Полная новость",
+                headerLeft: () => (
+                  <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Text
+                      style={{ marginLeft: 16, fontSize: 18, color: "#4a90e2" }}
+                    >
+                      Назад
+                    </Text>
+                  </TouchableOpacity>
+                ),
+              })}
             />
-            <Stack.Screen
-              name="Chat"
-              component={Chat}
-              options={{ title: "Чат с оператором" }}
-            />
-            <Stack.Screen
-              name="Report"
-              component={IncidentScreen}
-              options={{ title: "Сообщить о нарушении" }}
-            />
-            <Stack.Screen
-              name="Alerts"
-              component={EmergencyAlerts}
-              options={{ title: "Уведомления о ЧС" }}
-            />
-            <Stack.Screen
-              name="Profile"
-              component={ProfileScreen}
-              options={{ title: "Профиль" }}
-            />
-          </>
+          </Stack.Group>
         ) : (
           <>
             <Stack.Screen

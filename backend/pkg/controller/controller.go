@@ -29,6 +29,7 @@ func InitRoutes(r *gin.Engine) {
 			{
 				chat.GET("/", ChatHandler)
 				chat.GET("/messages/:user_id", GetMessages)
+				user.GET("/chats/:user_id", GetUserChats)
 
 			}
 
