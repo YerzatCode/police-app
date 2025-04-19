@@ -128,3 +128,49 @@ func GetMessages(c *gin.Context) {
 
 	c.JSON(http.StatusOK, messages)
 }
+func GetUserChats(c *gin.Context) {
+	userID := c.Param("user_id") // Получаем user_id из контекста сессии (через middleware)
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id is required"})
+		return
+	}
+
+	// Ищем все уникальные чаты, где пользователь является отправителем или получателем
+	var messages []models.Message
+	if err := db.DB.Where("sender_id = ? OR receiver_id = ?", userID, userID).Find(&messages).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка при получении сообщений"})
+		return
+	}
+
+	// Создаём уникальные чаты, основываясь на списке сообщений
+	// Мы считаем, что чат - это пара: отправитель и получатель
+	chatMap := make(map[string]models.Chat)
+
+	for _, msg := range messages {
+		// Определяем чат как пару пользователей (без учёта направления)
+		chatID := createChatID(msg.SenderID, msg.ReceiverID)
+		if _, exists := chatMap[chatID]; !exists {
+			chatMap[chatID] = models.Chat{
+				User1ID: msg.SenderID,
+				User2ID: msg.ReceiverID,
+			}
+		}
+	}
+
+	// Преобразуем карту в список чатов
+	var chats []models.Chat
+	for _, chat := range chatMap {
+		chats = append(chats, chat)
+	}
+
+	c.JSON(http.StatusOK, chats)
+}
+
+// Функция для создания уникального идентификатора чата на основе двух пользователей
+func createChatID(user1ID, user2ID string) string {
+	// Возвращаем упорядоченные ID пользователей, чтобы они одинаково сортировались
+	if user1ID < user2ID {
+		return user1ID + "-" + user2ID
+	}
+	return user2ID + "-" + user1ID
+}

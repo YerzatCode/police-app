@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, { Marker } from "react-native-maps";
-import PushNotification from "react-native-push-notification";
 import axios from "axios";
 
 // Функция вычисления расстояния (формула Хаверсина)
@@ -34,6 +33,7 @@ const EmergencyAlerts = () => {
   const [loading, setLoading] = useState(true);
   const [userLocation, setUserLocation] = useState(null);
   const [nearestAlert, setNearestAlert] = useState(null);
+  const [policeStations, setPoliceStations] = useState([]);
 
   useEffect(() => {
     requestLocationPermission();
@@ -66,6 +66,7 @@ const EmergencyAlerts = () => {
         const { latitude, longitude } = position.coords;
         setUserLocation({ latitude, longitude });
         fetchAlerts(latitude, longitude);
+        fetchPoliceStations(latitude, longitude);
       },
       (error) => {
         console.error("Ошибка получения геолокации:", error);
@@ -131,6 +132,18 @@ const EmergencyAlerts = () => {
     }
   };
 
+  const fetchPoliceStations = async (latitude, longitude) => {
+    // Пример: Получаем фейковые данные о ближайших пунктах полиции (замените на ваш API)
+    const response = await axios.get(
+      "https://api.example.com/police_stations",
+      {
+        params: { latitude, longitude },
+      }
+    );
+
+    setPoliceStations(response.data);
+  };
+
   const findNearestAlert = (alerts) => {
     if (alerts.length === 0) return;
 
@@ -139,15 +152,6 @@ const EmergencyAlerts = () => {
     );
 
     setNearestAlert(nearest);
-
-    if (nearest.distance < 50) {
-      PushNotification.localNotification({
-        title: "⚠️ Опасность рядом!",
-        message: `${nearest.type} - ${
-          nearest.title
-        } (${nearest.distance.toFixed(2)} км от вас)`,
-      });
-    }
   };
 
   return (
@@ -163,8 +167,8 @@ const EmergencyAlerts = () => {
             initialRegion={{
               latitude: userLocation.latitude,
               longitude: userLocation.longitude,
-              latitudeDelta: 5,
-              longitudeDelta: 5,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
             }}
           >
             <Marker
@@ -182,6 +186,18 @@ const EmergencyAlerts = () => {
                 title={alert.title}
                 description={alert.type}
                 pinColor="red"
+              />
+            ))}
+            {policeStations.map((station, index) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: station.latitude,
+                  longitude: station.longitude,
+                }}
+                title="Пункт полиции"
+                description={station.name}
+                pinColor="green"
               />
             ))}
           </MapView>

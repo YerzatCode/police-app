@@ -1,126 +1,119 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import useUser from "../Store/user";
 
-const ProfileScreen = ({ navigation }) => {
+const Profile = ({ navigation }) => {
   const { user, logout } = useUser((state) => state);
-
+  console.log(user);
   return (
-    <LinearGradient colors={["#1c1f2a", "#2d3548"]} style={styles.container}>
-      <View style={styles.profileContainer}>
-        <Ionicons
-          name="person-circle"
-          size={100}
-          color="#fff"
-          style={styles.icon}
-        />
-
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Ionicons name="person-circle-outline" size={100} color="#333" />
         <Text style={styles.name}>
           {user?.fisrt_name} {user?.last_name}
         </Text>
         <Text style={styles.role}>
-          Роль: {user?.role === "operator" ? "Оператор" : "Пользователь"}
+          {user?.role === "operator" ? "Оператор" : "Пользователь"}
         </Text>
-
-        <View style={styles.infoContainer}>
-          <InfoItem label="📧 Email" value={user?.email} />
-          <InfoItem label="📞 Телефон" value={user?.phone} />
-          <InfoItem label="🆔 Паспорт" value={user?.passport_id} />
-        </View>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={() => logout()}>
-          <Ionicons name="log-out-outline" size={20} color="white" />
-          <Text style={styles.logoutText}>Выйти</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={20} color="white" />
-          <Text style={styles.backText}>Назад</Text>
-        </TouchableOpacity>
       </View>
-    </LinearGradient>
+
+      <View style={styles.card}>
+        <Info label="Фамилия" value={user?.last_name} />
+        <Info label="Имя" value={user?.first_name} />
+        <Info label="Логин" value={user?.login} />
+
+        <Info label="Email" value={user?.email} />
+        <Info label="Телефон" value={user?.phone} />
+        <Info label="Паспорт" value={user?.passport_id} />
+      </View>
+
+      <TouchableOpacity style={styles.logout} onPress={logout}>
+        <Ionicons name="log-out-outline" size={20} color="#fff" />
+        <Text style={styles.logoutText}>Выйти</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-// 🔹 Компонент информации
-const InfoItem = ({ label, value }) => (
-  <View style={styles.infoItem}>
+const Info = ({ label, value }) => (
+  <View style={styles.infoRow}>
     <Text style={styles.label}>{label}</Text>
-    <Text style={styles.value}>{value}</Text>
+    <Text style={styles.value}>{value || "—"}</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: "#f6f7f9",
     padding: 20,
-  },
-  profileContainer: {
     alignItems: "center",
   },
-  icon: {
-    marginBottom: 10,
+  header: {
+    alignItems: "center",
+    marginBottom: 30,
   },
   name: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#222",
+    marginTop: 8,
   },
   role: {
-    fontSize: 16,
-    color: "#bbb",
-    marginBottom: 20,
+    fontSize: 14,
+    color: "#777",
+    marginTop: 4,
   },
-  infoContainer: {
+  card: {
+    backgroundColor: "#fff",
     width: "100%",
-    marginBottom: 20,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 10,
+    elevation: 3,
   },
-  infoItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#444b5b",
+  infoRow: {
+    marginBottom: 16,
   },
   label: {
-    color: "#bbb",
-    fontSize: 16,
+    color: "#888",
+    fontSize: 13,
+    marginBottom: 4,
   },
   value: {
-    color: "white",
+    color: "#333",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "500",
   },
-  logoutButton: {
+  logout: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#b30000",
+    backgroundColor: "#ff5252",
     paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingHorizontal: 24,
+    borderRadius: 30,
   },
   logoutText: {
-    color: "white",
+    color: "#fff",
+    fontWeight: "600",
     fontSize: 16,
-    fontWeight: "bold",
-    marginLeft: 10,
+    marginLeft: 8,
   },
-  backButton: {
-    marginTop: 20,
+  backLink: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 30,
   },
   backText: {
-    color: "#bbb",
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: 14,
+    color: "#555",
+    marginLeft: 6,
   },
 });
 
-export default ProfileScreen;
+export default Profile;

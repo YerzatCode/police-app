@@ -12,6 +12,14 @@ const Login = () => {
   const [isSecure, setIsSecure] = React.useState(true);
   const { login } = useUser((state) => state);
 
+  const inputTheme = {
+    colors: {
+      primary: "#007AFF", // синий цвет активной рамки
+      text: "#333333",
+      placeholder: "#888888",
+    },
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* ЛОГОТИП */}
@@ -31,8 +39,7 @@ const Login = () => {
           mode="outlined"
           onChangeText={setLoginValue}
           value={loginValue}
-          outlineColor="#0056b3"
-          theme={{ colors: { primary: "#0056b3" } }}
+          theme={inputTheme}
         />
         <TextInput
           style={styles.input}
@@ -42,8 +49,7 @@ const Login = () => {
           onChangeText={setPasswordValue}
           value={passwordValue}
           secureTextEntry={isSecure}
-          outlineColor="#0056b3"
-          theme={{ colors: { primary: "#0056b3" } }}
+          theme={inputTheme}
           right={
             <TextInput.Icon
               icon={isSecure ? "eye-off" : "eye"}
@@ -78,7 +84,7 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1f2a",
+    backgroundColor: "#f9f9f9", // светлый фон
     alignItems: "center",
     justifyContent: "center",
   },
@@ -88,9 +94,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   header: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "white",
+    color: "#333333",
     marginBottom: 20,
   },
   inputBox: {
@@ -100,21 +106,23 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     marginBottom: 15,
+    backgroundColor: "white", // белый фон инпутов
   },
   loginButton: {
     width: "100%",
-    backgroundColor: "#0056b3",
+    backgroundColor: "#007AFF", // синий цвет кнопки
     paddingVertical: 10,
-    borderRadius: 5,
+    borderRadius: 8,
+    marginTop: 10,
   },
   divider: {
     width: "100%",
     height: 1,
-    backgroundColor: "#d4bbff",
-    marginVertical: 15,
+    backgroundColor: "#cccccc",
+    marginVertical: 20,
   },
   registerText: {
-    color: "#d4bbff",
+    color: "#007AFF",
     fontSize: 16,
   },
 });

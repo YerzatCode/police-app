@@ -47,28 +47,29 @@ const Register = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Заголовок */}
       <Text variant="headlineMedium" style={styles.header}>
         Регистрация
       </Text>
 
-      {/* Форма регистрации */}
       <View style={styles.form}>
         <TextInput
           label="Имя"
           value={data.first_name}
           onChangeText={(text) => handleChange("first_name", text)}
+          mode="outlined"
         />
         <TextInput
           label="Фамилия"
           value={data.last_name}
           onChangeText={(text) => handleChange("last_name", text)}
+          mode="outlined"
         />
         <TextInput
           label="Почта"
           value={data.email}
           keyboardType="email-address"
           onChangeText={(text) => handleChange("email", text)}
+          mode="outlined"
         />
         <TextInput
           label="ИИН"
@@ -76,21 +77,22 @@ const Register = () => {
           keyboardType="numeric"
           maxLength={12}
           onChangeText={(text) => handleChange("passport_id", text)}
+          mode="outlined"
         />
         <TextInput
           label="Логин"
           value={data.login}
           onChangeText={(text) => handleChange("login", text)}
+          mode="outlined"
         />
-
         <TextInput
           label="Телефон"
           value={data.phone}
           keyboardType="phone-pad"
           maxLength={11}
           onChangeText={(text) => handleChange("phone", text)}
+          mode="outlined"
         />
-
         <TextInput
           label="Пароль"
           secureTextEntry={isSecure}
@@ -102,6 +104,7 @@ const Register = () => {
               onPress={() => setIsSecure(!isSecure)}
             />
           }
+          mode="outlined"
         />
 
         <Button
@@ -114,7 +117,11 @@ const Register = () => {
 
         <View style={styles.divider} />
 
-        <Button onPress={() => navigate.navigate("Login")}>
+        <Button
+          mode="text"
+          onPress={() => navigate.navigate("Login")}
+          labelStyle={{ color: "#5c5c5c" }}
+        >
           Есть аккаунт? Войти
         </Button>
       </View>
@@ -122,19 +129,18 @@ const Register = () => {
   );
 };
 
-// 🎨 СТИЛИ
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1f2a",
+    backgroundColor: "#f5f5f5", // Светлый фон
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
   },
   header: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#9279c8",
+    color: "#333333",
     marginBottom: 20,
   },
   form: {
@@ -142,14 +148,14 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   button: {
-    backgroundColor: "#0056b3",
+    backgroundColor: "#4a90e2",
     paddingVertical: 10,
     borderRadius: 5,
   },
   divider: {
     width: "100%",
     height: 1,
-    backgroundColor: "#d4bbff",
+    backgroundColor: "#cccccc",
     marginVertical: 15,
   },
 });
